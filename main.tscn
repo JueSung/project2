@@ -1,6 +1,76 @@
-[gd_scene load_steps=2 format=3 uid="uid://bfr16r7qsrugn"]
+[gd_scene load_steps=5 format=3 uid="uid://bfr16r7qsrugn"]
 
-[ext_resource type="Script" uid="uid://cpwsfebuxsegt" path="res://main.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://b3j31trfd1j5x" path="res://main.gd" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://slysd64qkbn6" path="res://lobby.tscn" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://cnjkdotanbnl5" path="res://multiplayer_processing.tscn" id="3_h2yge"]
+[ext_resource type="Script" uid="uid://mxdfgxnlt8pu" path="res://hud.gd" id="4_1bvp3"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_ig7tw")
+
+[node name="Lobby" parent="." instance=ExtResource("2_0xm2m")]
+
+[node name="Multiplayer_Processing" parent="." instance=ExtResource("3_h2yge")]
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("4_1bvp3")
+
+[node name="Host_Game" type="Button" parent="HUD"]
+offset_left = 55.0
+offset_top = 54.0
+offset_right = 394.0
+offset_bottom = 232.0
+text = "Host Game
+"
+
+[node name="Join_Game" type="Button" parent="HUD"]
+offset_left = 618.0
+offset_top = 58.0
+offset_right = 1011.0
+offset_bottom = 219.0
+text = "Join Game
+"
+
+[node name="Start_Game" type="Button" parent="HUD"]
+offset_left = 67.0
+offset_top = 270.0
+offset_right = 380.0
+offset_bottom = 361.0
+text = "Start Game"
+
+[node name="ReturnToTitlePage" type="Button" parent="HUD"]
+offset_left = 373.0
+offset_top = 477.0
+offset_right = 650.0
+offset_bottom = 579.0
+text = "Return to Title Page"
+
+[node name="IP" type="LineEdit" parent="HUD"]
+offset_left = 334.0
+offset_top = 248.0
+offset_right = 659.0
+offset_bottom = 298.0
+placeholder_text = "Enter IP"
+
+[node name="Port" type="LineEdit" parent="HUD"]
+offset_left = 800.0
+offset_top = 236.0
+offset_right = 1098.0
+offset_bottom = 282.0
+placeholder_text = "Enter Port"
+
+[node name="WaitingToStart" type="Label" parent="HUD"]
+offset_left = 430.0
+offset_top = 386.0
+offset_right = 767.0
+offset_bottom = 506.0
+text = "Waiting to Start . . ."
+
+[connection signal="player_connected" from="Lobby" to="." method="add_player"]
+[connection signal="player_disconnected" from="Lobby" to="." method="player_disconnected"]
+[connection signal="server_disconnected" from="Lobby" to="." method="server_disconnected"]
+[connection signal="set_ID" from="Lobby" to="." method="set_ID"]
+[connection signal="pressed" from="HUD/Host_Game" to="." method="host_game"]
+[connection signal="pressed" from="HUD/Join_Game" to="." method="join_game"]
+[connection signal="pressed" from="HUD/Start_Game" to="." method="start_game"]
+[connection signal="pressed" from="HUD/ReturnToTitlePage" to="." method="return_to_title_page"]

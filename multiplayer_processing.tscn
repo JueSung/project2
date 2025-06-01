@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnjkdotanbnl5"]
+
+[ext_resource type="Script" uid="uid://dspmos17btnq" path="res://multiplayer_processing.gd" id="1_lgb4g"]
+
+[node name="Client" type="Node"]
+script = ExtResource("1_lgb4g")
