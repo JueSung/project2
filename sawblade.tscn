@@ -1,0 +1,43 @@
+[gd_scene load_steps=6 format=3 uid="uid://dfg1k5aelvss6"]
+
+[ext_resource type="Script" uid="uid://2mx7y5ssq5vl" path="res://sawblade.gd" id="1_w1314"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4vue1"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4vue1"]
+radius = 30.0
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_w1314"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w1314"]
+radius = 30.0
+
+[node name="Sawblade" type="RigidBody2D"]
+collision_layer = 2
+collision_mask = 6
+physics_material_override = SubResource("PhysicsMaterial_4vue1")
+gravity_scale = 0.0
+contact_monitor = true
+max_contacts_reported = 1000
+linear_damp = -0.1
+script = ExtResource("1_w1314")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_4vue1")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = -20.0
+offset_top = -21.0
+offset_right = 20.0
+offset_bottom = 19.0
+texture = SubResource("CanvasTexture_w1314")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_w1314")
+
+[connection signal="body_entered" from="Area2D" to="." method="hit_player"]

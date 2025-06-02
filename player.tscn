@@ -6,7 +6,13 @@
 size = Vector2(50, 50)
 
 [node name="Player" type="CharacterBody2D"]
+collision_mask = 5
 script = ExtResource("1_4flbx")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_sh265")
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+enabled = false
+target_position = Vector2(0, 1080)
+collision_mask = 2

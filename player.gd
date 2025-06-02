@@ -27,6 +27,15 @@ var can_jump = 0 #is a timer for extra time bout .4 seconds
 var can_double_jump = false
 var up_has_released = true
 
+var right_click_has_released = true
+var left_click_has_released = true
+
+var marked_sawblades = []
+var sawblades_leaped = 0 #jump over 10 sawblades to get one charge (charge is ability)
+var charges = 0 #num of ability uses
+
+var BoomScene = preload("res://boom.tscn")
+
 func set_ID(id):
 	my_ID = id
 
@@ -34,10 +43,27 @@ func _ready():
 	player_data["position"] = position
 	velocity.y = -1
 	
+	if get_tree().root.get_node("Main").my_ID != 1:
+		$CollisionShape2D.disabled = true
+		$RayCast2D.enabled = false
+	
 	
 
 func _process(delta):
 	if get_tree().root.get_node("Main").my_ID == 1:
+		
+		#reset double jump and when landing on floor, mark sawblades
+		if is_on_floor():
+			$RayCast2D.enabled = false
+			can_double_jump = true
+			for i in range(len(marked_sawblades)):
+				if is_instance_valid(marked_sawblades[i]):
+					marked_sawblades[i].mark()
+					sawblades_leaped += 1
+					if sawblades_leaped == 1:
+						sawblades_leaped -= 1
+						charges += 1
+			marked_sawblades = []	
 		
 		#jumping stuff
 		if not is_on_floor(): #if in the air
@@ -47,6 +73,7 @@ func _process(delta):
 				velocity.y += gravity * 1.5 * delta
 		#handle jump
 		if up and (is_on_floor() or (up_has_released and (can_jump or can_double_jump))):
+			$RayCast2D.enabled = true
 			velocity.y = JUMP_VELOCITY
 			if not (is_on_floor() or can_jump) and up_has_released:
 				can_double_jump = false
@@ -58,8 +85,8 @@ func _process(delta):
 		if not up:
 			up_has_released = true
 
-		#reset double jump
-		if is_on_floor() or can_jump:
+				
+		if can_jump:
 			can_double_jump = true
 		
 		
@@ -91,7 +118,40 @@ func _process(delta):
 		for i in range(collision_count):
 			var collision = get_slide_collision(i)
 			if collision.get_collider() is Player:
-				can_jump = .4
+				can_jump = .4	
+		
+		
+		#checking if over sawblade
+		if $RayCast2D.is_colliding():
+			var collider = $RayCast2D.get_collider() #collider is the first collider along raycast path
+			if marked_sawblades.find(collider) == -1:
+				marked_sawblades.append(collider)
+				
+		#ability
+		if left_click and left_click_has_released and charges > 0:
+			#projectile ability use
+			left_click_has_released = false
+			charges -= 1
+			var boom = BoomScene.instantiate()
+			var dir = mouse_position - global_position
+			boom.setUp(true, dir.normalized() * 80 + global_position, atan2(dir.y,dir.x))
+			get_tree().root.get_node("Main").main_add_child("Boom", boom)
+			
+		if right_click and right_click_has_released and charges > 0:
+			#"melee" ability use
+			right_click_has_released = false
+			charges -= 1
+			var boom = BoomScene.instantiate()
+			boom.setUp(false, global_position, 0)
+			get_tree().root.get_node("Main").main_add_child("Boom", boom)
+		
+		
+		if not left_click:
+			left_click_has_released = true
+		if not right_click:
+			right_click_has_released = true
+		
+		
 		
 		
 		player_data["position"] = position

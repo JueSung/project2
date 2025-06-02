@@ -8,4 +8,7 @@ func setUp(size, pos, rot):
 	
 	position = pos
 	rotation = rot
-	print($CollisionShape2D.shape.size)
+
+func _ready():
+	if get_tree().root.get_node("Main").my_ID != 1:
+		$CollisionShape2D.disabled = true

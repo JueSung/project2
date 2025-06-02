@@ -68,11 +68,23 @@ func send_player_info(player_datas):
 func recieve_player_info(player_datas):
 	get_parent().update_player_datas(player_datas)
 
+#called by main to send out updates for object game states; handles creation of objects by seeing new objects
+func send_object_states(objects_datas):
+	rpc_id(0, "recieve_object_states", objects_datas)
 
-#recieve information to create object
+#recieve object game states and new objects for creation
+@rpc("any_peer", "reliable")
+func recieve_object_states(objects_datas):
+	get_parent().update_object_states(objects_datas)
+
+#send info to delete object
+func send_delete_objects(objects_to_be_deleted):
+	rpc_id(0, "recieve_delete_objects", objects_to_be_deleted)
 
 #recieve information to delete object
-
+@rpc("any_peer", "reliable")
+func recieve_delete_objects(objects_to_be_deleted):
+	get_parent().client_delete_objects(objects_to_be_deleted)
 
 #is called by main when game starts
 func is_in_a_game(id):

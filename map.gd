@@ -3,6 +3,7 @@ class_name Map
 #gonna say rn theres only one possible map
 
 var SurfaceScene = preload("res://surface.tscn")
+var SawbladeDispenserScene = preload("res://dispenser.tscn")
 
 func _ready():
 	
@@ -25,4 +26,8 @@ func _ready():
 	ceiling.setUp(Vector2(1920,40), Vector2(1920/2, 0), 0)
 	add_child(ceiling)
 	
+	
 	#sawblade dispenser
+	var dispenser = SawbladeDispenserScene.instantiate()
+	dispenser.position = Vector2(1920/2, 1080/2)
+	add_child(dispenser)

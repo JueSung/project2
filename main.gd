@@ -8,8 +8,18 @@ var player_objects = {}
 var players_inputs = {} #dictionary of player id : dictionary of inputs
 var player_datas = {}
 
+var objects = {} #types: Sawblade, Boom
+var objects_datas = {}
+var objects_to_be_deleted = []
+
 var PlayerScene = preload("res://player.tscn")
 var MapScene = preload("res://map.tscn")
+
+#For client instantiation scenes
+var Scenes = {
+	"Sawblade" : preload("res://sawblade.tscn"),
+	"Boom" : preload("res://boom.tscn")
+}
 
 
 func _ready():
@@ -99,8 +109,64 @@ func _process(delta):
 			
 			player_datas[id] = player_objects[id].get_data()
 		$Multiplayer_Processing.send_player_info(player_datas)
+		
+		for key in objects:
+			if is_instance_valid(objects[key]):
+				objects_datas[key] = objects[key].get_data()
+		
+		$Multiplayer_Processing.send_object_states(objects_datas) #handles objects to be added via seeing new objects
+		$Multiplayer_Processing.send_delete_objects(objects_to_be_deleted)
+		objects_to_be_deleted = []
+		
+
+#only for server
+func main_add_child(type, object):
+	#the formula for consistent stringified name based on object is everything after the ":" in the object name
+	var str = str(object)
+	str = str.substr(str.find(":") + 1)
+	objects[str] = object
+	objects_datas[str] = object.get_data()
+	add_child(object)
+
+#only for server
+func main_delete_object(object):
+	#the formula for consistent stringified name based on object is everything after the ":" in the object name
+	var str = str(object)
+	str = str.substr(str.find(":") + 1)
+	objects_to_be_deleted.append(str)
+	objects.erase(str)
+	objects_datas.erase(str)
+	object.queue_free()
+
+#only for clients
+func client_delete_objects(objects_to_be_deletedd):
+	for i in range(len(objects_to_be_deletedd)):
+		var key = objects_to_be_deletedd[i]
+		if objects.has(key) and is_instance_valid(objects[key]):
+			objects[key].free()
+			objects.erase(key)
+			objects_datas.erase(key)
+		
 
 func update_player_datas(player_datass):
 	player_datas = player_datass
 	for id in player_objects:
 		player_objects[id].update_game_state(player_datas[id])
+
+func update_object_states(objects_datass):
+	for key in objects_datass:
+		#handle new objects, creation
+		if not objects.has(key):
+			var type = objects_datass[key]["type"]
+			match type:
+				"Sawblade":
+					var obj = Scenes[type].instantiate()
+					objects[key] = obj
+					add_child(obj)
+				"Boom":
+					var obj = Scenes[type].instantiate()
+					objects[key] = obj
+					add_child(obj)
+		else:
+			if is_instance_valid(objects[key]):
+				objects[key].update_game_state(objects_datass[key])
