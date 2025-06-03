@@ -36,8 +36,9 @@ texture = SubResource("CanvasTexture_w1314")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 2
+collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_w1314")
 
-[connection signal="body_entered" from="Area2D" to="." method="hit_player"]
+[connection signal="body_entered" from="Area2D" to="." method="body_entered"]

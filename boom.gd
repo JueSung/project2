@@ -38,19 +38,20 @@ func _ready():
 	if get_parent().my_ID != 1:
 		$ProjectileShape.disabled = true
 		$MeleeShape.disabled = true
+		
+		set_process(false)
 	else:
 		
 		data["position"] = global_position
 		data["rotation"] = rotation
 
 func _process(delta):
-	if get_tree().root.get_node("Main").my_ID == 1:
-		if isProjectile:
-			position += velocity * delta
-		else:
-			time_melee_exists -= delta
-			if time_melee_exists <= 0:
-				get_tree().root.get_node("Main").main_delete_object(self)
+	if isProjectile:
+		position += velocity * delta
+	else:
+		time_melee_exists -= delta
+		if time_melee_exists <= 0:
+			get_tree().root.get_node("Main").main_delete_object(self)
 	
 	#update animation stuff
 	data["position"] = global_position

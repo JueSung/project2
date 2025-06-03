@@ -21,6 +21,10 @@ var Scenes = {
 	"Boom" : preload("res://boom.tscn")
 }
 
+var inGame = false #if in a game, is true
+
+var currMap = null
+
 
 func _ready():
 	#$HUD.show()
@@ -32,15 +36,22 @@ func set_ID(id):
 	$Multiplayer_Processing.set_ID(id)
 
 #recieved from lobby _register_player when player joins both server and clients
-func add_player(peer_id: Variant, player_info: Variant):
+func add_player(peer_id: Variant, _player_info: Variant):
 	players_IDs.append(peer_id)
 
 #signal recieved from lobby _on_player_disconnected if any peer disconnecs
 func player_disconnected(peer_id: Variant):
 	players_IDs.remove_at(players_IDs.find(peer_id))
+	players_inputs.erase(peer_id)
+	delete_player(peer_id)
+	##player_objects[peer_id].queue_free()
+	##player_objects.erase(peer_id)
+	##player_datas.erase(peer_id)
+	
 
 #for client when/if server disconnects
 func server_disconnected():
+	return_to_title_page()
 	pass # Replace with function body.
 
 #homepage stuff
@@ -59,6 +70,7 @@ func join_game():
 
 func start_game():
 	$HUD.start_game()
+	inGame = true
 	
 	if my_ID == 1:
 		$Multiplayer_Processing.start_the_games()
@@ -66,6 +78,7 @@ func start_game():
 	#initialize map
 	var map = MapScene.instantiate()
 	add_child(map)
+	currMap = map
 	
 	#initialize players
 	var count = 0
@@ -88,10 +101,25 @@ func start_game():
 	
 
 func return_to_title_page():
-	#player_datas = {}
-	#player_objects = {}
-	#player_IDs = []
-	#need to clear all child nodes, players, etc.
+	inGame = false
+	
+	for id in player_objects:
+		player_objects[id].queue_free()
+	player_objects = {}
+	player_datas = {}
+	players_inputs = {}
+	players_IDs = []
+	
+	for id in objects:
+		objects[id].queue_free()
+	objects = {}
+	objects_datas = {}
+	objects_to_be_deleted = []
+	
+	if currMap != null:
+		currMap.queue_free()
+		currMap = null
+
 	
 	$Lobby.remove_multiplayer_peer()
 	$HUD.return_to_title_page()
@@ -103,7 +131,7 @@ func set_player_inputs(id, inputs):
 func _process(delta):
 	if my_ID == 1:
 		
-		for id in player_objects:
+		for id in player_objects: #enhanced for loop
 			if id in players_inputs:
 				player_objects[id].update_inputs(players_inputs[id])
 			
@@ -117,10 +145,63 @@ func _process(delta):
 		$Multiplayer_Processing.send_object_states(objects_datas) #handles objects to be added via seeing new objects
 		$Multiplayer_Processing.send_delete_objects(objects_to_be_deleted)
 		objects_to_be_deleted = []
+
+#called either by client from msg from server or part of server game state
+func delete_player(id):
+	if my_ID == 1:
+		$Multiplayer_Processing.send_delete_player(id)
 		
+	if player_objects.has(id):
+		player_objects[id].queue_free()
+		player_objects.erase(id)
+		player_datas.erase(id)
+	
+		if my_ID == 1:
+			if len(player_objects) <= 1:
+				end_game()
+
+#called by player when player dies, only called by server
+func player_died(id):
+	delete_player(id)
+	
+	#if len(player_objects) <= 1:
+	#	end_game()
+
+#game ends when 1 or less players
+func end_game():
+	#send msg to end game
+	if not inGame:
+		return
+		
+	inGame = false
+	
+	if my_ID == 1:
+		$Multiplayer_Processing.send_end_game()
+	
+	currMap.queue_free()
+	currMap = null
+	
+	for id in player_objects:
+		player_objects[id].queue_free()
+	player_objects = {}
+	player_datas = {}
+	players_inputs = {}
+	
+	for id in objects:
+		objects[id].queue_free()
+	objects = {}
+	objects_datas = {}
+	objects_to_be_deleted = []
+	
+	if my_ID == 1:
+		$HUD.host_game()
+	else:
+		$HUD.join_game()
+
+
 
 #only for server
-func main_add_child(type, object):
+func main_add_child(object):
 	#the formula for consistent stringified name based on object is everything after the ":" in the object name
 	var str = str(object)
 	str = str.substr(str.find(":") + 1)
@@ -143,16 +224,17 @@ func client_delete_objects(objects_to_be_deletedd):
 	for i in range(len(objects_to_be_deletedd)):
 		var key = objects_to_be_deletedd[i]
 		if objects.has(key) and is_instance_valid(objects[key]):
-			objects[key].free()
+			objects[key].queue_free()
 			objects.erase(key)
 			objects_datas.erase(key)
 		
 
 func update_player_datas(player_datass):
-	player_datas = player_datass
-	for id in player_objects:
-		player_objects[id].update_game_state(player_datas[id])
-
+	player_datas = player_datass	
+	for id in player_datas:
+		if player_objects.has(id) and is_instance_valid(player_objects[id]):
+			player_objects[id].update_game_state(player_datass[id])
+	
 func update_object_states(objects_datass):
 	for key in objects_datass:
 		#handle new objects, creation

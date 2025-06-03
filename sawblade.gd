@@ -27,6 +27,8 @@ func _ready():
 		$Area2D/CollisionShape2D.disabled = true
 		$Area2D.monitorable = false
 		$Area2D.monitoring = false
+		
+		set_process(false)
 	
 	else:
 		data["position"] = global_position
@@ -34,17 +36,16 @@ func _ready():
 		#animation states
 
 func _process(delta):
-	if get_tree().root.get_node("Main").my_ID == 1:
-		if t_to_go > 0:
-			t_to_go -= delta
-			if t_to_go < 0:
-				linear_velocity = direction.normalized() * LVELOCITY
-				$CollisionShape2D.disabled = false
-				$Area2D/CollisionShape2D.disabled = false
-		
-		data["position"] = global_position
-		data["rotation"] = rotation
-		
+	if t_to_go > 0:
+		t_to_go -= delta
+		if t_to_go < 0:
+			linear_velocity = direction.normalized() * LVELOCITY
+			$CollisionShape2D.disabled = false
+			$Area2D/CollisionShape2D.disabled = false
+	
+	data["position"] = global_position
+	data["rotation"] = rotation
+	
 
 #called when player lands after jumped over this sawblade
 #if marks = 4, then it dies
@@ -63,12 +64,17 @@ func mark():
 func die():
 	get_tree().root.get_node("Main").main_delete_object(self) #change later if hay animation
 
-func hit_player(body):
+#from area2D node signal
+func body_entered(body):
+	if body == self:
+		return
 	if body is Sawblade:
-		pass #just do nothing
+		pass
+		#mark() #if to many sawblades become generated, can do this to limit sawblades
 	elif body is Player:
 		#deal damage to player or kill player
-		pass
+		body.take_damage() #player takes damage
+
 
 func get_data():
 	return data

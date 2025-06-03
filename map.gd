@@ -26,6 +26,15 @@ func _ready():
 	ceiling.setUp(Vector2(1920,40), Vector2(1920/2, 0), 0)
 	add_child(ceiling)
 	
+	#ledges
+	var ledge = SurfaceScene.instantiate()
+	ledge.setUp(Vector2(1920/5.0, 20), Vector2(1920/10.0, 540), 0)
+	add_child(ledge)
+	
+	ledge = SurfaceScene.instantiate()
+	ledge.setUp(Vector2(1920/5, 20), Vector2(1920 - 1920/10, 540), 0)
+	add_child(ledge)
+	
 	
 	#sawblade dispenser
 	var dispenser = SawbladeDispenserScene.instantiate()

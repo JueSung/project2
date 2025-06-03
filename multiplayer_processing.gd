@@ -67,6 +67,14 @@ func send_player_info(player_datas):
 @rpc("any_peer", "reliable")
 func recieve_player_info(player_datas):
 	get_parent().update_player_datas(player_datas)
+	
+#called by server to send out msg to clients to delete a particular player bc dead prob
+func send_delete_player(id):
+	rpc_id(0, "recieve_delete_player", id)
+
+@rpc("any_peer", "reliable")
+func recieve_delete_player(id):
+	get_parent().delete_player(id)
 
 #called by main to send out updates for object game states; handles creation of objects by seeing new objects
 func send_object_states(objects_datas):
@@ -85,6 +93,17 @@ func send_delete_objects(objects_to_be_deleted):
 @rpc("any_peer", "reliable")
 func recieve_delete_objects(objects_to_be_deleted):
 	get_parent().client_delete_objects(objects_to_be_deleted)
+
+#called by server, send msg to end game to clients
+func send_end_game():
+	rpc_id(0, "recieve_end_game")
+
+#client recieve msg from server to end game
+@rpc("any_peer", "reliable")
+func recieve_end_game():
+	get_parent().end_game()
+
+
 
 #is called by main when game starts
 func is_in_a_game(id):
