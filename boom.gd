@@ -49,6 +49,9 @@ func _ready():
 		
 		data["position"] = global_position
 		data["rotation"] = rotation
+		
+		data["MeleeSprite_visible"] = $MeleeSprite.visible
+		data["Projectile_visible"] = $ProjectileSprite.visible
 
 func _process(delta):
 	if isProjectile:
@@ -61,7 +64,6 @@ func _process(delta):
 	#update animation stuff
 	data["position"] = global_position
 	#prob don't need to do rotation
-	#animation stuff
 
 #from projectile to melee
 func becomeMelee():
@@ -73,6 +75,9 @@ func becomeMelee():
 	
 	$ProjectileSprite.visible = false
 	$MeleeSprite.visible = true
+	
+	data["MeleeSprite_visible"] = $MeleeSprite.visible
+	data["Projectile_visible"] = $ProjectileSprite.visible
 	
 	force_update_transform()
 
@@ -107,3 +112,5 @@ func update_game_state(dataa):
 	position = dataa["position"]
 	rotation = dataa["rotation"]
 	#animation stuff
+	$MeleeSprite.visible = dataa["MeleeSprite_visible"]
+	$ProjectileSprite.visible = dataa["Projectile_visible"]

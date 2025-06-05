@@ -48,12 +48,32 @@ func _process(delta):
 	
 	data["position"] = global_position
 	data["rotation"] = rotation
+	data["pre_mark_animation"] = $Pre_mark_sprite.animation
+	data["animation"] = $AnimatedSprite2D.animation
 	
+#when a player is over sawblade, but hasn't landed yet
+func premark():
+	if $Pre_mark_sprite.animation == "Green":
+		$Pre_mark_sprite.animation = "Yellow"
+	elif $Pre_mark_sprite.animation == "Yellow":
+		$Pre_mark_sprite.animation = "Red"
+	elif $Pre_mark_sprite.animation == "Red":
+		pass
+	else: #Normal
+		if $AnimatedSprite2D.animation == "Normal":
+			$Pre_mark_sprite.animation = "Green"
+		elif $AnimatedSprite2D.animation == "Green":
+			$Pre_mark_sprite.animation = "Yellow"
+		elif $AnimatedSprite2D.animation == "Yellow":
+			$Pre_mark_sprite.animation = "Red"
+		else: #Red
+			pass
 
 #called when player lands after jumped over this sawblade
 #if marks = 4, then it dies
 func mark():
 	marks += 1
+	$Pre_mark_sprite.animation = "None"
 	if marks == 1:
 		$AnimatedSprite2D.animation = "Green"
 	elif marks == 2:
@@ -87,3 +107,5 @@ func update_game_state(dataa):
 	rotation = dataa["rotation"]
 	#animation stuff
 	
+	$Pre_mark_sprite.animation = dataa["pre_mark_animation"]
+	$AnimatedSprite2D.animation = dataa["animation"]

@@ -46,7 +46,7 @@ func set_ID(id):
 	my_ID = id
 
 func _ready():
-	player_data["position"] = position
+	
 	velocity.y = -1
 	
 	$AnimatedSprite2D.animation = "Stand"
@@ -59,7 +59,19 @@ func _ready():
 		$RayCastSawblade.enabled = false
 		
 		set_process(false)
-	
+	else:
+		player_data["position"] = position
+		
+		player_data["animation"] = $AnimatedSprite2D.animation
+		player_data["animation_frame"] = $AnimatedSprite2D.frame
+		player_data["flip_h"] = $AnimatedSprite2D.flip_h
+		
+		player_data["Heart1_visible"] = $Health/Heart1.visible
+		player_data["Heart2_visible"] = $Health/Heart2.visible
+		player_data["Heart3_visible"] = $Health/Heart3.visible
+		player_data["Heart4_visible"] = $Health/Heart4.visible
+		player_data["Heart5_visible"] = $Health/Heart5.visible
+		player_data["charges"] = len(charges)
 
 func _process(delta):
 	#when take damage, freezes for a second
@@ -170,6 +182,7 @@ func _process(delta):
 		var collider = $RayCastSawblade.get_collider() #collider is the first collider along raycast path
 		if marked_sawblades.find(collider) == -1:
 			marked_sawblades.append(collider)
+			collider.premark()
 	#------------------------------------------------------------------------------------------------
 	
 	#ability
@@ -200,6 +213,16 @@ func _process(delta):
 	
 	
 	player_data["position"] = position
+	player_data["animation"] = $AnimatedSprite2D.animation
+	player_data["animation_frame"] = $AnimatedSprite2D.frame
+	player_data["flip_h"] = $AnimatedSprite2D.flip_h
+	
+	player_data["Heart1_visible"] = $Health/Heart1.visible
+	player_data["Heart2_visible"] = $Health/Heart2.visible
+	player_data["Heart3_visible"] = $Health/Heart3.visible
+	player_data["Heart4_visible"] = $Health/Heart4.visible
+	player_data["Heart5_visible"] = $Health/Heart5.visible
+	player_data["charges"] = len(charges)
 
 #player takes damage upon hitting sawblade, called by sawblade
 func take_damage():
@@ -214,7 +237,6 @@ func take_damage():
 
 #when player runs out of health, dies, called by take_damage()
 func die():
-	print(my_ID, ", ", get_parent().my_ID)
 	get_tree().root.get_node("Main").player_died(my_ID) #tell main that player died to check if game is done
 	#set_process(false)
 	#$CollisionShape2D.disabled = true
@@ -226,7 +248,27 @@ func get_data():
 #for client side to update game state
 func update_game_state(player_dataa):
 	position = player_dataa["position"]
-
+	
+	$AnimatedSprite2D.animation = player_dataa["animation"]
+	$AnimatedSprite2D.frame = player_dataa["animation_frame"]
+	$AnimatedSprite2D.flip_h = player_dataa["flip_h"]
+	
+	$Health/Heart1.visible = player_dataa["Heart1_visible"]
+	$Health/Heart2.visible = player_dataa["Heart2_visible"]
+	$Health/Heart3.visible = player_dataa["Heart3_visible"]
+	$Health/Heart4.visible = player_dataa["Heart4_visible"]
+	$Health/Heart5.visible = player_dataa["Heart5_visible"]
+	
+	while player_dataa["charges"] > len(charges):
+		var charge_sprite_instance = ChargeSpriteScene.instantiate()
+		charge_sprite_instance.position = Vector2(0, 15 * len(charges))
+		$Charges.add_child(charge_sprite_instance)
+		charges.push_back(charge_sprite_instance)
+	while player_dataa["charges"] < len(charges):
+		var charge = charges.pop_back()
+		charge.queue_free()
+		
+	
 #ran by server to update inputs sent by clients
 func update_inputs(inputs):
 	left = inputs["left"]

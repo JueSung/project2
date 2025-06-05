@@ -90,17 +90,17 @@ animations = [{
 "name": &"Green",
 "speed": 5.0
 }, {
+"frames": [],
+"loop": true,
+"name": &"None",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("15_of7p6")
 }],
 "loop": true,
 "name": &"Red",
-"speed": 5.0
-}, {
-"frames": [],
-"loop": true,
-"name": &"White",
 "speed": 5.0
 }, {
 "frames": [{
@@ -138,7 +138,7 @@ animation = &"Green"
 position = Vector2(-6, -4)
 scale = Vector2(0.1, 0.1)
 sprite_frames = SubResource("SpriteFrames_ln12a")
-animation = &"White"
+animation = &"None"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_4vue1")
