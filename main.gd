@@ -24,6 +24,7 @@ var Scenes = {
 var inGame = false #if in a game, is true
 
 var currMap = null
+var sound_percentage = 100
 
 
 func _ready():
@@ -89,7 +90,7 @@ func start_game():
 		#figure out player position, may be handled by Map in the future
 		if my_ID == 1:
 			# do some calculation to figure out placements of players
-			player_instance.position = Vector2(300,300 + count * 50)
+			player_instance.position = Vector2(300 + count * 50,300)
 		else:
 			#just yeet them up there, their positions will be updated shortly
 			player_instance.position = Vector2(-100, 540)
@@ -193,6 +194,7 @@ func end_game():
 	objects_datas = {}
 	objects_to_be_deleted = []
 	
+	$HUD.visible = true
 	if my_ID == 1:
 		$HUD.host_game()
 	else:
@@ -252,3 +254,11 @@ func update_object_states(objects_datass):
 		else:
 			if is_instance_valid(objects[key]):
 				objects[key].update_game_state(objects_datass[key])
+
+
+func sound_button():
+	if typeof($HUD/Sound_insert.text) == TYPE_INT:
+		sound_percentage = int($HUD/Sound_insert.text)
+
+func get_sound_percentage():
+	return sound_percentage

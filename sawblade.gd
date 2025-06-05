@@ -36,6 +36,9 @@ func _ready():
 		
 		data["position"] = global_position
 		data["rotation"] = rotation
+		data["pre_mark_animation"] = $Pre_mark_sprite.animation
+		data["animation"] = $AnimatedSprite2D.animation
+		data["animation_frame"] = $AnimatedSprite2D.frame
 		#animation states
 
 func _process(delta):
@@ -50,6 +53,7 @@ func _process(delta):
 	data["rotation"] = rotation
 	data["pre_mark_animation"] = $Pre_mark_sprite.animation
 	data["animation"] = $AnimatedSprite2D.animation
+	data["animation_frame"] = $AnimatedSprite2D.frame
 	
 #when a player is over sawblade, but hasn't landed yet
 func premark():
@@ -109,3 +113,4 @@ func update_game_state(dataa):
 	
 	$Pre_mark_sprite.animation = dataa["pre_mark_animation"]
 	$AnimatedSprite2D.animation = dataa["animation"]
+	$AnimatedSprite2D.frame = dataa["animation_frame"]

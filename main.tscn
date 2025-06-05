@@ -20,6 +20,7 @@ offset_left = 55.0
 offset_top = 54.0
 offset_right = 394.0
 offset_bottom = 232.0
+theme_override_font_sizes/font_size = 50
 text = "Host Game
 "
 
@@ -28,6 +29,7 @@ offset_left = 618.0
 offset_top = 58.0
 offset_right = 1011.0
 offset_bottom = 219.0
+theme_override_font_sizes/font_size = 50
 text = "Join Game
 "
 
@@ -36,28 +38,31 @@ offset_left = 67.0
 offset_top = 270.0
 offset_right = 380.0
 offset_bottom = 361.0
+theme_override_font_sizes/font_size = 40
 text = "Start Game"
 
 [node name="ReturnToTitlePage" type="Button" parent="HUD"]
-offset_left = 373.0
-offset_top = 477.0
-offset_right = 650.0
-offset_bottom = 579.0
+offset_left = 497.0
+offset_top = 506.0
+offset_right = 774.0
+offset_bottom = 608.0
+theme_override_font_sizes/font_size = 50
 text = "Return to Title Page"
 
 [node name="IP" type="LineEdit" parent="HUD"]
-offset_left = 334.0
-offset_top = 248.0
-offset_right = 659.0
-offset_bottom = 298.0
-text = "192.168.86.25"
+offset_left = 413.0
+offset_top = 241.0
+offset_right = 840.0
+offset_bottom = 348.0
+theme_override_font_sizes/font_size = 40
 placeholder_text = "Enter IP"
 
 [node name="Port" type="LineEdit" parent="HUD"]
-offset_left = 800.0
-offset_top = 236.0
-offset_right = 1098.0
-offset_bottom = 282.0
+offset_left = 945.0
+offset_top = 252.0
+offset_right = 1334.0
+offset_bottom = 346.0
+theme_override_font_sizes/font_size = 40
 text = "3000"
 placeholder_text = "Enter Port"
 
@@ -66,7 +71,25 @@ offset_left = 430.0
 offset_top = 386.0
 offset_right = 767.0
 offset_bottom = 506.0
+theme_override_font_sizes/font_size = 50
 text = "Waiting to Start . . ."
+
+[node name="Sound_Button" type="Button" parent="HUD"]
+offset_left = 122.0
+offset_top = 657.0
+offset_right = 395.0
+offset_bottom = 720.0
+theme_override_font_sizes/font_size = 40
+text = "Confirm Sound"
+
+[node name="Sound_insert" type="LineEdit" parent="HUD"]
+offset_left = 123.0
+offset_top = 716.0
+offset_right = 411.0
+offset_bottom = 823.0
+theme_override_font_sizes/font_size = 40
+text = "100"
+placeholder_text = "0"
 
 [connection signal="player_connected" from="Lobby" to="." method="add_player"]
 [connection signal="player_disconnected" from="Lobby" to="." method="player_disconnected"]
@@ -76,3 +99,4 @@ text = "Waiting to Start . . ."
 [connection signal="pressed" from="HUD/Join_Game" to="." method="join_game"]
 [connection signal="pressed" from="HUD/Start_Game" to="." method="start_game"]
 [connection signal="pressed" from="HUD/ReturnToTitlePage" to="." method="return_to_title_page"]
+[connection signal="pressed" from="HUD/Sound_Button" to="." method="sound_button"]

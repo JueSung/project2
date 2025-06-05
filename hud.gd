@@ -40,16 +40,11 @@ func join_game():
 	$WaitingToStart.visible = true
 
 func start_game():
-	$Host_Game.visible = false
-	$Join_Game.visible = false
-	$Start_Game.visible = false
-	$ReturnToTitlePage.visible = false
-	$IP.visible = false
-	$Port.visible = false
-	$WaitingToStart.visible = false
+	visible = false
 
 #return to title page from hosting/joining/waiting to start
 func return_to_title_page():
+	visible = true
 	$Host_Game.visible = true
 	$Join_Game.visible = true
 	$Start_Game.visible = false

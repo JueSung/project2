@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b0b30c87fuu4q"]
+[gd_scene load_steps=10 format=3 uid="uid://b0b30c87fuu4q"]
 
 [ext_resource type="Script" uid="uid://c7a2t7g2n733e" path="res://player.gd" id="1_4flbx"]
 [ext_resource type="Texture2D" uid="uid://bgcl12p214htw" path="res://Sprites/Take_damage.png" id="2_2hs0m"]
@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://ckfgauy7wc3du" path="res://Sprites/walk1.png" id="4_1jxqw"]
 [ext_resource type="Texture2D" uid="uid://28f7yuy04xvn" path="res://Sprites/walk2.png" id="5_dw050"]
 [ext_resource type="PackedScene" uid="uid://cnihpilfo2yav" path="res://heart.tscn" id="7_1jxqw"]
-[ext_resource type="PackedScene" uid="uid://or21wkegnqc2" path="res://Charge.tscn" id="8_dw050"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_4flbx"]
 animations = [{
@@ -48,7 +47,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sh265"]
-size = Vector2(52, 102)
+size = Vector2(40, 100)
 
 [node name="Player" type="CharacterBody2D"]
 collision_mask = 5
@@ -58,7 +57,8 @@ script = ExtResource("1_4flbx")
 position = Vector2(2, 1)
 scale = Vector2(0.15, 0.15)
 sprite_frames = SubResource("SpriteFrames_4flbx")
-animation = &"Walk"
+animation = &"Damage"
+frame_progress = 0.000340672
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_sh265")
@@ -105,9 +105,4 @@ offset_top = -45.0
 offset_right = 35.0
 offset_bottom = -45.0
 
-[node name="Charge" parent="Charges" instance=ExtResource("8_dw050")]
-visible = false
-
-[node name="Charge2" parent="Charges" instance=ExtResource("8_dw050")]
-visible = false
-position = Vector2(0, 15)
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
