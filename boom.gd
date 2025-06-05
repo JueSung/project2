@@ -27,13 +27,18 @@ func _ready():
 		$MeleeShape.disabled = true
 		
 		velocity = SPEED * Vector2(cos(rotation), sin(rotation))
+		
 		#animation stuff
+		$ProjectileSprite.visible = true
+		$MeleeSprite.visible = false
 		
 	else:
 		#isProjectile = false #default value
 		$ProjectileShape.disabled = true
 		$MeleeShape.disabled = false
 		#animation stuff
+		$ProjectileSprite.visible = false
+		$MeleeSprite.visible = true
 	
 	if get_parent().my_ID != 1:
 		$ProjectileShape.disabled = true
@@ -65,6 +70,9 @@ func becomeMelee():
 	$ProjectileShape.disabled = true
 	$MeleeShape.disabled = false
 	$MeleeShape.shape = $MeleeShape.shape.duplicate()
+	
+	$ProjectileSprite.visible = false
+	$MeleeSprite.visible = true
 	
 	force_update_transform()
 

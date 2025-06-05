@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://b1abuqhtnqyds"]
+[gd_scene load_steps=4 format=3 uid="uid://b1abuqhtnqyds"]
 
 [ext_resource type="Script" uid="uid://bvakxqjq6mv15" path="res://surface.gd" id="1_tap8s"]
+[ext_resource type="Texture2D" uid="uid://ba4grq0unj00h" path="res://Sprites/Surface_gray.png" id="2_yudna"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5ax0b"]
 
@@ -11,3 +12,7 @@ script = ExtResource("1_tap8s")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_5ax0b")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_yudna")
+region_enabled = true

@@ -31,6 +31,9 @@ func _ready():
 		set_process(false)
 	
 	else:
+		$AnimatedSprite2D.animation = "Normal"
+		$AnimatedSprite2D.play()
+		
 		data["position"] = global_position
 		data["rotation"] = rotation
 		#animation states
@@ -52,11 +55,11 @@ func _process(delta):
 func mark():
 	marks += 1
 	if marks == 1:
-		$TextureRect.modulate = Color(0,1,0)
+		$AnimatedSprite2D.animation = "Green"
 	elif marks == 2:
-		$TextureRect.modulate = Color(1,1,0)
+		$AnimatedSprite2D.animation = "Yellow"
 	elif marks == 3:
-		$TextureRect.modulate = Color(1,0,0)
+		$AnimatedSprite2D.animation = "Red"
 	elif marks == 4:
 		die()
 

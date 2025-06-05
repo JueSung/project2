@@ -6,6 +6,8 @@ func setUp(size, pos, rot):
 	$CollisionShape2D.shape = $CollisionShape2D.shape.duplicate() #separates resource so same scene shapes are independent
 	$CollisionShape2D.shape.size = size
 	
+	$Sprite2D.region_rect = Rect2(0,0,size.x,size.y)
+	
 	position = pos
 	rotation = rot
 

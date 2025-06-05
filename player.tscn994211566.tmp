@@ -44,7 +44,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"Walk",
-"speed": 10.0
+"speed": 3.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sh265"]
@@ -58,7 +58,7 @@ script = ExtResource("1_4flbx")
 position = Vector2(2, 1)
 scale = Vector2(0.15, 0.15)
 sprite_frames = SubResource("SpriteFrames_4flbx")
-animation = &"Walk"
+animation = &"Damage"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_sh265")

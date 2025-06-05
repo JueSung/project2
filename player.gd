@@ -32,13 +32,15 @@ var left_click_has_released = true
 
 var marked_sawblades = []
 var sawblades_leaped = 0 #jump over 10 sawblades to get one charge (charge is ability)
-var charges = 0 #num of ability uses
+var charges = []
 
 var health = 5
+var health_sprites = []
 var frozenFor = 0 #when take damage frozne for amount of time
 
 
 var BoomScene = preload("res://boom.tscn")
+var ChargeSpriteScene = preload("res://Charge.tscn")
 
 func set_ID(id):
 	my_ID = id
@@ -46,6 +48,10 @@ func set_ID(id):
 func _ready():
 	player_data["position"] = position
 	velocity.y = -1
+	
+	$AnimatedSprite2D.animation = "Stand"
+	$AnimatedSprite2D.play()
+	health_sprites = [$Health/Heart1, $Health/Heart2, $Health/Heart3, $Health/Heart4, $Health/Heart5]
 	
 	if get_tree().root.get_node("Main").my_ID != 1:
 		$CollisionShape2D.disabled = true
@@ -59,6 +65,10 @@ func _process(delta):
 	#when take damage, freezes for a second
 	if frozenFor > 0:
 		frozenFor -= delta
+		if frozenFor > 0:
+			$AnimatedSprite2D.animation = "Damage"
+		else:
+			$AnimatedSprite2D.animation = "Stand"
 		return
 	
 	#reset double jump and when landing on floor, mark sawblades
@@ -72,12 +82,20 @@ func _process(delta):
 				sawblades_leaped += 1
 				if sawblades_leaped == 5:
 					sawblades_leaped -= 5
-					charges += 1
-					#do obtain charge animation
-		marked_sawblades = []	
+					
+					#charges animation stuff
+					var charge_sprite_instance = ChargeSpriteScene.instantiate()
+					charge_sprite_instance.position = Vector2(0, 15 * len(charges))
+					$Charges.add_child(charge_sprite_instance)
+					charges.push_back(charge_sprite_instance)
+		marked_sawblades = []
+		
+		if $AnimatedSprite2D.animation == "Jump":
+			$AnimatedSprite2D.animation = "Stand"
 	
 	#jumping stuff
 	if not is_on_floor(): #if in the air
+		$AnimatedSprite2D.animation = "Jump"
 		if velocity.y <= 0 || (up && not up_has_released):
 			velocity.y += gravity * delta #gravity applied less if going up
 		else:
@@ -104,16 +122,23 @@ func _process(delta):
 	var direction = 0
 	if right:
 		direction += 1
+		$AnimatedSprite2D.flip_h = false
 	if left:
 		direction -= 1
+		$AnimatedSprite2D.flip_h = true
 	
 	if direction:
 		velocity.x = move_toward(velocity.x, direction * SPEED, SPEED * delta * 30)
 		
 		#animation stuff
+		if $AnimatedSprite2D.animation == "Stand":
+			$AnimatedSprite2D.animation = "Walk"
+			$AnimatedSprite2D.play()
 		
 	else:
 		velocity.x = move_toward(velocity.x, 0, 20 * SPEED * delta)
+		if $AnimatedSprite2D.animation == "Walk":
+			$AnimatedSprite2D.animation = "Stand"
 	
 	
 	
@@ -148,22 +173,24 @@ func _process(delta):
 	#------------------------------------------------------------------------------------------------
 	
 	#ability
-	if left_click and left_click_has_released and charges > 0:
+	if left_click and left_click_has_released and len(charges) > 0:
 		#projectile ability use
 		left_click_has_released = false
-		charges -= 1
+		var charge = charges.pop_back()
+		charge.queue_free()
 		var boom = BoomScene.instantiate()
 		var dir = mouse_position - global_position
 		boom.setUp(true, dir.normalized() * 80 + global_position, atan2(dir.y,dir.x))
 		get_tree().root.get_node("Main").main_add_child(boom)
 		
-	if right_click and right_click_has_released and charges > 0:
+	if right_click and right_click_has_released and len(charges) > 0:
 		#"melee" ability use
 		right_click_has_released = false
-		charges -= 1
+		var charge = charges.pop_back()
+		charge.queue_free()
 		var boom = BoomScene.instantiate()
 		boom.setUp(false, global_position, 0)
-		get_tree().root.get_node("Main").main_add_child("Boom", boom)
+		get_tree().root.get_node("Main").main_add_child(boom)
 	
 	
 	if not left_click:
@@ -179,6 +206,8 @@ func take_damage():
 	velocity /= 3
 	frozenFor = .2 #freezes a bit when take damage
 	health -= 1
+	var hSprite = health_sprites.pop_back()
+	hSprite.visible = false
 	if health <= 0:
 		#do some die animation
 		die()

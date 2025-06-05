@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bbp6jce1ph3vh"]
+[gd_scene load_steps=4 format=3 uid="uid://bbp6jce1ph3vh"]
 
 [ext_resource type="Script" uid="uid://7dq11iltrd2i" path="res://dispenser.gd" id="1_sesgf"]
+[ext_resource type="Texture2D" uid="uid://6e3l20641qmc" path="res://Sprites/Dispenser.png" id="2_1vaq5"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e1ckb"]
 radius = 30.0
@@ -9,6 +10,11 @@ radius = 30.0
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_sesgf")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-5, 2)
+scale = Vector2(0.11, 0.11)
+texture = ExtResource("2_1vaq5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_e1ckb")

@@ -1,15 +1,119 @@
-[gd_scene load_steps=6 format=3 uid="uid://dfg1k5aelvss6"]
+[gd_scene load_steps=22 format=3 uid="uid://dfg1k5aelvss6"]
 
 [ext_resource type="Script" uid="uid://2mx7y5ssq5vl" path="res://sawblade.gd" id="1_w1314"]
+[ext_resource type="Texture2D" uid="uid://bpld7aipi4wh8" path="res://Sprites/Sawblade1_green.png" id="2_flh4v"]
+[ext_resource type="Texture2D" uid="uid://dkgr4m0pfq8ii" path="res://Sprites/Sawblade2_green.png" id="3_byu7l"]
+[ext_resource type="Texture2D" uid="uid://dg5rib146dxv1" path="res://Sprites/Sawblade3_green.png" id="4_wc721"]
+[ext_resource type="Texture2D" uid="uid://4xq0e3n4ab37" path="res://Sprites/Sawblade1.png" id="5_nhpt6"]
+[ext_resource type="Texture2D" uid="uid://drdykyde0tore" path="res://Sprites/Sawblade2.png" id="6_mlmth"]
+[ext_resource type="Texture2D" uid="uid://bdmgadc0kd51o" path="res://Sprites/Sawblade3.png" id="7_anfew"]
+[ext_resource type="Texture2D" uid="uid://clve03a3o8a6d" path="res://Sprites/Sawblade1_red.png" id="8_kpt5o"]
+[ext_resource type="Texture2D" uid="uid://cf78amk3g78so" path="res://Sprites/Sawblade2_red.png" id="9_hu4l5"]
+[ext_resource type="Texture2D" uid="uid://da0et5f17fgr2" path="res://Sprites/Sawblade3_red.png" id="10_uiqe2"]
+[ext_resource type="Texture2D" uid="uid://w4ypf3djqe7f" path="res://Sprites/Sawblade1_yellow.png" id="11_rufgt"]
+[ext_resource type="Texture2D" uid="uid://bq1m8lkkoxwy1" path="res://Sprites/Sawblade2_yellow.png" id="12_mjxts"]
+[ext_resource type="Texture2D" uid="uid://beqhtbxb7p4ef" path="res://Sprites/Sawblade3_yellow.png" id="13_63ikq"]
+[ext_resource type="Texture2D" uid="uid://dmium1pklgd37" path="res://Sprites/Sawblade_pre_mark_green.png" id="14_lnw8o"]
+[ext_resource type="Texture2D" uid="uid://dm0dx44cst35f" path="res://Sprites/Sawblade_pre_mark_red.png" id="15_of7p6"]
+[ext_resource type="Texture2D" uid="uid://c7htu2rhif0sk" path="res://Sprites/Sawblade_pre_mark_yellow.png" id="16_wsr1a"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_4vue1"]
 friction = 0.0
 bounce = 1.0
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_5f24a"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_flh4v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_byu7l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_wc721")
+}],
+"loop": true,
+"name": &"Green",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_nhpt6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_mlmth")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_anfew")
+}],
+"loop": true,
+"name": &"Normal",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_kpt5o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_hu4l5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_uiqe2")
+}],
+"loop": true,
+"name": &"Red",
+"speed": 15.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_rufgt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_mjxts")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_63ikq")
+}],
+"loop": true,
+"name": &"Yellow",
+"speed": 15.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ln12a"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("14_lnw8o")
+}],
+"loop": true,
+"name": &"Green",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_of7p6")
+}],
+"loop": true,
+"name": &"Red",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"White",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("16_wsr1a")
+}],
+"loop": true,
+"name": &"Yellow",
+"speed": 5.0
+}]
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_4vue1"]
 radius = 30.0
-
-[sub_resource type="CanvasTexture" id="CanvasTexture_w1314"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_w1314"]
 radius = 30.0
@@ -24,15 +128,20 @@ max_contacts_reported = 1000
 linear_damp = -0.1
 script = ExtResource("1_w1314")
 
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-6, -2)
+scale = Vector2(0.09, 0.09)
+sprite_frames = SubResource("SpriteFrames_5f24a")
+animation = &"Green"
+
+[node name="Pre_mark_sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(-6, -4)
+scale = Vector2(0.1, 0.1)
+sprite_frames = SubResource("SpriteFrames_ln12a")
+animation = &"White"
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_4vue1")
-
-[node name="TextureRect" type="TextureRect" parent="."]
-offset_left = -20.0
-offset_top = -21.0
-offset_right = 20.0
-offset_bottom = 19.0
-texture = SubResource("CanvasTexture_w1314")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 2
